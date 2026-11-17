@@ -1,0 +1,35 @@
+Name: RITHISH KUMAR D | Reg.No: 192565089 | Java 21.0.12.1
+
+----- TEST A: HashSet<BadStudent> that APPEARS to work -----
+PREDICTION: size 2. Same object -> identical identity hashCode -> same bucket, and equals() is true.
+OBSERVED  : size = 2
+hashCode(a1) twice: 1846274136 and 1846274136 (same object, same value)
+
+----- TEST B: HashSet<BadStudent> with duplicate scans made by NEW objects -----
+PREDICTION: size 3 (wrong; should be 2). equals() says the two Arun objects are equal, but their identity-based hashCodes differ, so they sit in different buckets and equals() is never called.
+OBSERVED  : size = 3  -> [192311001 Arun, 192311001 Arun, 192311002 Divya]
+x.equals(y) = true, x.hashCode()==y.hashCode() ? false
+PREDICTION (bulk): 1000 students scanned 3 times each -> bad class ~3000, fixed class 1000.
+OBSERVED  (bulk): bad class = 3000, fixed class = 1000
+
+----- TEST C: field used in hashCode() changed AFTER insertion (even with a correct hashCode) -----
+Before change: contains(m) = true, size = 1
+PREDICTION: size stays 1, but contains(m) = false and remove(m) = false, because m is still stored in the bucket of the OLD hash while lookups now use the NEW hash.
+OBSERVED  : size = 1, contains(m) = false, contains(new equal key) = false, remove(m) = false
+Iteration still finds 1 element (a 'ghost' entry that cannot be looked up or removed)
+Adding an equal student now gives size = 2 (duplicate admitted)
+
+----- TEST D: TreeSet whose compareTo() (by name) is inconsistent with equals() (by regNo) -----
+PREDICTION: HashSet size 3 (uses equals/hashCode: three different regNo). TreeSet size 2 (uses only compareTo: the two 'Kiran' entries compare as 0, so the second is dropped).
+OBSERVED  : HashSet size = 3, TreeSet size = 2  -> TreeSet = [192311010 Kiran, 192311030 Meena]
+d1.equals(d2) = false but d1.compareTo(d2) = 0
+
+----- VERIFICATION of the corrected class (GoodStudent) -----
+equals symmetric: true | equal => same hashCode: true
+Set size after the Gate-3 re-scan = 2 (expected 2)
+
+----- ALTERNATIVES: HashSet vs TreeSet(Comparator on regNo) vs HashMap<String,Student> -----
+400000 scans over up to 100000 unique students (averages of 7 runs after 3 warm-ups)
+HashSet<Student>              :   30.65 ms for 400000 scans (77 ns/scan), unique = 98124
+TreeSet<Student>(regNo cmp)   :  278.15 ms for 400000 scans (695 ns/scan), unique = 98124
+HashMap<String,Student>       :   67.33 ms for 400000 scans (168 ns/scan), unique = 98124

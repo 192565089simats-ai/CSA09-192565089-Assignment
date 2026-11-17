@@ -1,0 +1,14 @@
+Name: RITHISH KUMAR D | Reg.No: 192565089 | Java 21.0.12.1
+
+Correctness first: original and redesign give identical code-ordered output after every batch (incl. stock updates): true
+
+Each figure = average of 3 runs after 1 warm-up. ms covers: k adds + 1 report, repeated R times (report = ordered traversal of all codes).
+Scenario                    n      k    R |    ORIG ms  ORIG compares    ORIG MB |     NEW ms   NEW compares     NEW MB | TreeMap ms   speed-up
+S1  few changes         10000     50   50 |      415.0        4550357        5.2 |       34.4         564100        0.3 |       33.9      12.1x
+S2  few changes        100000     50   50 |     1422.4       36360923       43.5 |      103.9        4989128        0.7 |      198.5      13.7x
+S3  no changes         100000      0   50 |     1156.8       35586500       43.1 |       15.6              0        0.0 |      185.4      74.2x
+S4  bulk change        100000  50000    5 |      406.5       10404664       21.3 |      225.2        4837044       17.1 |      330.2       1.8x
+
+Lookup cost (n=100,000, avg of 5 runs): Original HashMap 40 ns/get | Redesign (HashMap + index) 31 ns/get | TreeMap 563 ns/get
+Extra retained memory of the redesign's cached index at n=100,000: about 0.40 MB (one 4-byte reference per code with compressed oops; the String objects are shared with the HashMap)
+(sink=true)

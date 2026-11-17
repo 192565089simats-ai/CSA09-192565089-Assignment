@@ -1,0 +1,40 @@
+Name: RITHISH KUMAR D | Reg.No: 192565089 | Java 21.0.12.1
+
+--- 1. Plain FIFO queue vs PriorityQueue (8 patients) ---
+Arrival order        : Asha(S5) Ravi(S3) John(S3) Divya(S4) Lata(S2) Sunil(S2) Meena(S1) Kumar(S1)
+Plain Queue serves   : [Asha(S5), Ravi(S3), John(S3), Divya(S4), Lata(S2), Sunil(S2), Meena(S1), Kumar(S1)]   <- Asha (S5) would be seen before Kumar (S1)!
+
+--- 2. Hand-worked correctness check ---
+Hand-derived order   : Meena(S1) Kumar(S1) Lata(S2) Sunil(S2) Ravi(S3) John(S3) Divya(S4) Asha(S5)
+PriorityQueue printed directly (heap array order): [Meena(S1), Kumar(S1), Lata(S2), Ravi(S3), Divya(S4), John(S3), Sunil(S2), Asha(S5)]
+Waiting list (sorted snapshot, queue untouched)  : [Meena(S1), Kumar(S1), Lata(S2), Sunil(S2), Ravi(S3), John(S3), Divya(S4), Asha(S5)]  size still 8
+Treatment order (poll): Meena(S1) Kumar(S1) Lata(S2) Sunil(S2) Ravi(S3) John(S3) Divya(S4) Asha(S5)
+Matches hand-derived order: true
+
+--- 3. Growth investigation (average of 5 runs after 2 warm-ups) ---
+Prediction: add = O(log n) worst case (O(1) average), poll = O(log n). Expect ns/op to grow slowly (about +1 level per doubling).
+         n    ns/add (bulk)  ns/poll (drain) ns per (poll+add) at size n
+      1000            148.3            112.6                    102.6
+     10000             36.6            169.0                    150.3
+    100000             35.1            246.7                    245.5
+   1000000             83.3            333.1                    433.1
+
+--- 4. Alternatives: sorted LinkedList vs 5 FIFO queues vs PriorityQueue (ns per operation) ---
+         n |     PQ admit      PQ next | SortedLL adm SortedLL nxt |   5xFIFO adm   5xFIFO nxt
+      1000 |         38.6        145.3 |       7341.1         48.9 |        151.9        226.0
+     10000 |         27.5        156.0 |      18671.3          5.0 |        221.3          4.3
+     50000 |         25.8        196.0 |     154885.1         15.7 |         11.2          8.0
+
+--- 5. Starvation: one S5 patient 'Old' arrives at minute 0; a new S1 patient arrives EVERY minute; one patient served per minute ---
+STRICT (severity, then arrival): Old (S5) STILL WAITING after 5000 minutes (starvation)
+FAIR (arrival + 30 min per severity level): Old (S5) treated at minute 120 (waited 120 min)
+
+--- 5b. Realistic stream: 20,000 minutes, mean 1.02 arrivals/min (surge), 1 patient served/min, severity mix 10/20/30/25/15 % ---
+Rule                               mean wait / max wait in minutes, per severity S1..S5
+STRICT                             S1: 0/2  S2: 0/4  S3: 1/10  S4: 4/52  S5: 837/1550 | left waiting at end: 213
+FAIR W=30                          S1: 69/165  S2: 94/197  S3: 119/228  S4: 149/257  S5: 178/287 | left waiting at end: 213
+FAIR W=10                          S1: 104/209  S2: 115/219  S3: 123/229  S4: 134/239  S5: 143/247 | left waiting at end: 213
+
+--- 6. Deployment check: 5,000 patients/day ---
+Admit + treat 5,000 patients in one day: 8.316 ms total (1.66 us per patient). A day has 86,400,000 ms.
+(sink=true)

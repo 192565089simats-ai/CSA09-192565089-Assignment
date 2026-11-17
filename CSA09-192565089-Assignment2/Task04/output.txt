@@ -1,0 +1,32 @@
+Name: RITHISH KUMAR D | Reg.No: 192565089 | Java 21.0.12.1
+Each figure = average of 7 runs after 3 warm-up runs. Lookups = 100000 random existing codes.
+
+=== n = 1000 medicines ===
+Structure              put all ms  100k get ms     ns/get    code-rpt ms  code order? added-rpt ms   added order?
+HashMap                      0.14         3.71         37          1.085          YES        0.055             NO
+TreeMap                      0.57        28.12        281          0.309          YES        0.649             NO
+LinkedHashMap                1.00         3.10         31          0.341          YES        0.024            YES
+Hashtable                    0.12         5.72         57          0.857          YES        0.039             NO
+SortedArray+binSearch        0.59        25.82        258          0.015          YES            -              -
+Extra work for 'added order' report with side-list + lookups: HashMap 0.031 ms, TreeMap 0.155 ms (LinkedHashMap needs none: 0.024 ms)
+
+=== n = 10000 medicines ===
+Structure              put all ms  100k get ms     ns/get    code-rpt ms  code order? added-rpt ms   added order?
+HashMap                      1.13         1.34         13          5.520          YES        0.319             NO
+TreeMap                      5.02        34.29        343          0.188          YES        0.212             NO
+LinkedHashMap                0.47         2.58         26          5.050          YES        0.111            YES
+Hashtable                    2.52         4.74         47          3.775          YES        0.303             NO
+SortedArray+binSearch        5.42        35.53        355          0.047          YES            -              -
+Extra work for 'added order' report with side-list + lookups: HashMap 0.131 ms, TreeMap 3.440 ms (LinkedHashMap needs none: 0.111 ms)
+
+=== n = 100000 medicines ===
+Structure              put all ms  100k get ms     ns/get    code-rpt ms  code order? added-rpt ms   added order?
+HashMap                      8.72         3.40         34         27.938          YES        6.208             NO
+TreeMap                     54.64        55.93        559          4.292          YES        4.026             NO
+LinkedHashMap               23.20         4.28         43         37.429          YES        2.171            YES
+Hashtable                   20.93         5.37         54         27.390          YES        3.805             NO
+SortedArray+binSearch      259.97        61.96        620          0.699          YES            -              -
+Extra work for 'added order' report with side-list + lookups: HashMap 2.573 ms, TreeMap 60.737 ms (LinkedHashMap needs none: 2.171 ms)
+
+Note: the code-order report time for HashMap, LinkedHashMap and Hashtable INCLUDES the extra Collections.sort() step; TreeMap and the sorted array iterate directly.
+(sink=true)

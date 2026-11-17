@@ -1,0 +1,35 @@
+Name: RITHISH KUMAR D | Reg.No: 192565089 | Java 21.0.12.1
+
+--- Data set 1 (ties at all three levels) ---
+Input     : [Panthers(9,4), Eagles(9,6), Bisons(9,4), Cobras(6,1), Eagles2(6,3), Aces(6,1), Hawks(3,0), Falcons(3,0), Zebras(9,6)]
+Ranking   : [Eagles(9,6), Zebras(9,6), Bisons(9,4), Panthers(9,4), Eagles2(6,3), Aces(6,1), Cobras(6,1), Falcons(3,0), Hawks(3,0)]
+Hand check: points desc; 9s -> goalDiff 6 (Eagles, Zebras by name) then 4 (Bisons, Panthers by name); 6s -> 3 (Eagles2) then 1 (Aces, Cobras); 3s -> Falcons, Hawks
+BY_RANK (correct)      antisymmetry violations=0, transitivity violations=0
+
+--- Data set 2 (designed to break faulty comparators) ---
+Input             : [Big(2000000000,0), Neg(-2000000000,0), Mid(5,0), Eight(8,2), Nine(9,7), Seven(7,1), Nine2(9,1), Aaa(9,1)]
+Correct           : [Big(2000000000,0), Nine(9,7), Aaa(9,1), Nine2(9,1), Eight(8,2), Seven(7,1), Mid(5,0), Neg(-2000000000,0)]
+F1 subtraction    : [Nine(9,7), Nine2(9,1), Aaa(9,1), Eight(8,2), Seven(7,1), Mid(5,0), Neg(-2000000000,0), Big(2000000000,0)]
+F2 no tie-breaker : [Big(2000000000,0), Nine(9,7), Nine2(9,1), Aaa(9,1), Eight(8,2), Seven(7,1), Mid(5,0), Neg(-2000000000,0)]
+F3 fuzzy (|d|<=2) : [Big(2000000000,0), Eight(8,2), Nine(9,7), Nine2(9,1), Mid(5,0), Seven(7,1), Aaa(9,1), Neg(-2000000000,0)]
+F4 reversed chain : [Neg(-2000000000,0), Mid(5,0), Seven(7,1), Eight(8,2), Nine2(9,1), Aaa(9,1), Nine(9,7), Big(2000000000,0)]
+F1 subtraction         antisymmetry violations=0, transitivity violations=18
+F2 no tie-breaker      antisymmetry violations=0, transitivity violations=0
+F3 fuzzy               antisymmetry violations=0, transitivity violations=8
+F4 reversed chain      antisymmetry violations=0, transitivity violations=0
+BY_RANK (correct)      antisymmetry violations=0, transitivity violations=0
+
+Sorting 2000 random teams with F3 (non-transitive): EXCEPTION: Comparison method violates its general contract!
+
+--- Reuse and wildcards ---
+Teams + EliteTeams : [Lions(12,9), Tigers(12,9), Eagles(9,6), Zebras(9,6)]
+top(elites,1) via List<? extends Team>: [Lions(12,9)]
+Leaderboard<Player> (same class reused): [Player[name=Kohli, runs=82, catches=1], Player[name=Rohit, runs=82, catches=0], Player[name=Gill, runs=64, catches=2]]
+Leaderboard.natural() (bounded type)    : [apple, fig, pear]
+Comparable<Team> alternative gives the same order: true
+
+--- Alternative: three stable sorts (name, goalDiff, points) vs one comparator chain ---
+Same final order: true
+Comparisons, one chain  : 3269908  (1 sort)
+Comparisons, three sorts: 6891462  (3 sorts: 3269608 + 1768249 + 1853605)
+Time for n=200000 (avg of 5 runs): one chain 138.4 ms, three sorts 188.0 ms

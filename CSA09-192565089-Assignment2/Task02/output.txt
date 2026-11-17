@@ -1,0 +1,35 @@
+Name: RITHISH KUMAR D | Reg.No: 192565089 | Java 21.0.12.1
+
+All times are average nanoseconds PER OPERATION (lower is better).
+Position tests use 1000 operations on a list that already holds n songs.
+
+Operation                                 n    ArrayList   LinkedList   ArrayDeque int[] manual
+Add at end                             1000         92.9         65.6         60.4         29.9
+Insert+remove at FRONT                 1000         85.7         54.7         39.1        192.5
+Insert+remove in MIDDLE                1000         67.5        896.3          n/a        117.6
+Get k-th element                       1000         77.5        464.0          n/a         60.2
+Iterate whole list (per element)       1000         71.4         73.7         83.1         30.3
+
+Add at end                            10000         72.1         42.7         49.4          5.5
+Insert+remove at FRONT                10000        291.6         38.3         34.5       1722.1
+Insert+remove in MIDDLE               10000        183.9       8702.1          n/a        864.5
+Get k-th element                      10000         88.1       5039.8          n/a         70.6
+Iterate whole list (per element)      10000         50.2         55.0          9.0          4.4
+
+Add at end                           100000          7.6         23.4          5.2          1.2
+Insert+remove at FRONT               100000       7492.2         37.4         31.7      22368.4
+Insert+remove in MIDDLE              100000       3611.1      93897.6          n/a      10702.2
+Get k-th element                     100000         96.2      59883.9          n/a         57.4
+Iterate whole list (per element)     100000          0.6          3.2          1.1          0.5
+
+=== Changed condition: 'Up Next' queue (addLast, addFirst, removeFirst), 200,000 mixed operations ===
+Structure                                 n    ArrayList   LinkedList   ArrayDeque
+ns per op (incl. initial fill)         1000         35.1         13.5          9.8
+ns per op (incl. initial fill)        10000        197.4         15.2          7.8
+ns per op (incl. initial fill)       100000       5876.9         13.8          4.3
+
+=== Memory per element (measured by heap difference for 1,000,000 Integers, boxed values shared) ===
+ArrayList : 4.0 bytes/element
+LinkedList: 24.0 bytes/element
+ArrayDeque: 4.0 bytes/element
+(sink=true)

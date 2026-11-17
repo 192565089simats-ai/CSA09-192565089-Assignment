@@ -1,0 +1,42 @@
+Name: RITHISH KUMAR D | Reg.No: 192565089 | Java 21.0.12.1
+
+=== W1 short ticket: 200000 ticket(s) x 10 fields (ticket length = 98 chars) ===
+All approaches produce identical text: true
+Approach         total ms/run    us per ticket   MB allocated/run    est. objects/ticket
+String (+)             27.419            0.137             187.20                     20
+StringBuilder          14.039            0.070              96.00                      7
+StringBuffer           14.577            0.073              96.00                      7
+String.join            11.882            0.059              40.00                     ~7
+StringJoiner           14.719            0.074              54.40                     ~7
+String.format         149.613            0.748             966.40                     20
+
+=== W2 many tickets: 10000 ticket(s) x 50 fields (ticket length = 532 chars) ===
+All approaches produce identical text: true
+Approach         total ms/run    us per ticket   MB allocated/run    est. objects/ticket
+String (+)              9.267            0.927             155.04                    100
+StringBuilder           3.182            0.318              18.08                      9
+StringBuffer            3.351            0.335              18.08                      9
+String.join             3.695            0.370               7.92                     ~9
+StringJoiner            4.357            0.436              11.20                     ~9
+String.format          51.301            5.130             683.84                    100
+
+=== W3 one very long ticket: 3 ticket(s) x 20000 fields (ticket length = 266690 chars) ===
+All approaches produce identical text: true
+Approach         total ms/run    us per ticket   MB allocated/run    est. objects/ticket
+String (+)            534.502       178167.203            7821.79                  40000
+StringBuilder           0.289           96.346               2.57                     18
+StringBuffer            0.430          143.437               2.57                     18
+String.join             0.586          195.404               1.04                    ~18
+StringJoiner            0.504          168.164               1.59                    ~18
+String.format         skipped                -                  -                      -
+
+Heap used before: 1.22 MB | after workloads (before GC): 3.89 MB | after GC: 2.84 MB
+
+=== Shared log: 8 threads x 200000 appends of "ab" (expected length 3200000) ===
+Trial 1: StringBuilder length=3200000 (lost 0, exceptions 0) | StringBuffer length=3200000
+Trial 2: StringBuilder length=3200000 (lost 0, exceptions 0) | StringBuffer length=3200000
+Trial 3: StringBuilder length=3200000 (lost 0, exceptions 0) | StringBuffer length=3200000
+Trial 4: StringBuilder length=3200000 (lost 0, exceptions 0) | StringBuffer length=3200000
+Trial 5: StringBuilder length=1946788 (lost 1253212, exceptions 0) | StringBuffer length=3200000
+Single thread, 20M appends: StringBuilder 67.8 ms, StringBuffer 493.4 ms
+(sink=true)
